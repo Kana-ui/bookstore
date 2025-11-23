@@ -44,7 +44,7 @@ $books = $stmt->fetchAll();
                     <a href="edit_book.php?id=<?= $b['id'] ?>">Edit</a> |
                     <a href="delete_book.php?id=<?= $b['id'] ?>"
                        onclick="return confirm('Are you sure you want to delete this book?');">
-                       🗑 Delete
+                        Delete
                     </a>
                 </td>
             </tr>
