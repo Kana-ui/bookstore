@@ -1,7 +1,7 @@
 <?php
 require_once "../config/db.php";
 require_once "../src/functions.php";
-
+require_login();
 // Read search filters (GET)
 $titleFilter = isset($_GET['title']) ? trim($_GET['title']) : '';
 $genreFilter = isset($_GET['genre']) ? trim($_GET['genre']) : '';
@@ -49,6 +49,11 @@ $books = $stmt->fetchAll();
 <h1>📚 Bookstore</h1>
 <a href="register.php">👤 Register User</a> 
 <a href="add_book.php">➕ Add New Book</a>
+<p>
+    Logged in as: <?= e(current_username()) ?> |
+    <a href="logout.php">Logout</a>
+</p>
+
 <hr>
 
 <h3>Search Books</h3>

@@ -1,7 +1,7 @@
 <?php
 require_once "../config/db.php";
 require_once "../src/functions.php";
-
+require_login();
 // Get book id from query string
 $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
