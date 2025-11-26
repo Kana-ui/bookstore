@@ -4,12 +4,14 @@ require_once "../src/functions.php";
 
 $errors = [];
 $success = '';
+$captchaQuestion = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
+    $username = post('username');
     $password = $_POST['password'] ?? '';
     $password2 = $_POST['password2'] ?? '';
     $role = $_POST['role'] ?? 'user';
+    $captchaInput = $_POST['captcha'] ?? '';
 
     // Basic validation
     if ($username === '') {
@@ -26,6 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!in_array($role, ['admin', 'user'], true)) {
         $role = 'user';
+    }
+
+    // CAPTCHA check
+    if (!validate_captcha($captchaInput)) {
+        $errors[] = "CAPTCHA answer is incorrect.";
     }
 
     // Check if username already exists
@@ -55,6 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $success = "User registered successfully. You can now log in.";
     }
+
+    // After POST, prepare new captcha for redisplay
+    $captchaQuestion = generate_captcha_question();
+
+} else {
+    // First time page load
+    $captchaQuestion = generate_captcha_question();
 }
 ?>
 <!DOCTYPE html>
@@ -98,6 +112,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <option value="user">User</option>
         <option value="admin">Admin</option>
     </select><br><br>
+
+    <label>CAPTCHA: What is <?= e($captchaQuestion) ?> ?</label><br>
+    <input type="number" name="captcha" required><br><br>
 
     <button type="submit">Register</button>
 </form>

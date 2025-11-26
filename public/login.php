@@ -3,14 +3,23 @@ require_once "../config/db.php";
 require_once "../src/functions.php";
 
 $errors = [];
+$captchaQuestion = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
+    $username = post('username');
     $password = $_POST['password'] ?? '';
+    $captchaInput = $_POST['captcha'] ?? '';
 
     if ($username === '' || $password === '') {
         $errors[] = "Username and password are required.";
-    } else {
+    }
+
+    // CAPTCHA check
+    if (!validate_captcha($captchaInput)) {
+        $errors[] = "CAPTCHA answer is incorrect.";
+    }
+
+    if (empty($errors)) {
         $stmt = $pdo->prepare("SELECT id, username, password_hash, role FROM users WHERE username = :username");
         $stmt->execute([':username' => $username]);
         $user = $stmt->fetch();
@@ -27,6 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = "Invalid username or password.";
         }
     }
+
+    // After processing POST, always create a fresh captcha for redisplay
+    $captchaQuestion = generate_captcha_question();
+
+} else {
+    // First page load (GET) – create captcha
+    $captchaQuestion = generate_captcha_question();
 }
 ?>
 <!DOCTYPE html>
@@ -51,12 +67,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 <?php endif; ?>
 
+
 <form method="POST">
     <label>Username:</label><br>
     <input type="text" name="username" required><br><br>
 
     <label>Password:</label><br>
     <input type="password" name="password" required><br><br>
+
+    <label>CAPTCHA: What is <?= e($captchaQuestion) ?> ?</label><br>
+    <input type="number" name="captcha" required><br><br>
 
     <button type="submit">Login</button>
 </form>
