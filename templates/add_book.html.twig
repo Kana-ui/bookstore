@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Book</title>
+</head>
+<body>
+
+<h2>Add New Book</h2>
+<p>
+    <a href="index.php">⬅ Back</a>
+</p>
+
+{% if errors is not empty %}
+    <div style="color:red;">
+        <ul>
+            {% for err in errors %}
+                <li>{{ err|e }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<form method="POST">
+
+    <label>Title:</label><br>
+    <input type="text" name="title" value="{{ values.title|e }}" required><br><br>
+
+    <label>Author:</label><br>
+    <input type="text" name="author" value="{{ values.author|e }}" required><br><br>
+
+    <label>Genre:</label><br>
+    <input type="text" name="genre" value="{{ values.genre|e }}" required><br><br>
+
+    <label>Publication Year:</label><br>
+    <input type="number" name="publication_year" value="{{ values.publication_year|e }}" required><br><br>
+
+    <label>ISBN (optional):</label><br>
+    <input type="text" name="isbn" value="{{ values.isbn|e }}"><br><br>
+
+    <label>Description (optional):</label><br>
+    <textarea name="description">{{ values.description|e }}</textarea><br><br>
+
+    <button type="submit">Add Book</button>
+</form>
+
+</body>
+</html>
