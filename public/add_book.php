@@ -1,7 +1,7 @@
 <?php
 require_once "../config/db.php";
 require_once "../src/functions.php";
-
+require_login();
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
