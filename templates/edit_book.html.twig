@@ -3,46 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Book</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-
-<h2>Edit Book</h2>
-<p>
-    <a href="index.php">⬅ Back</a>
-</p>
-
-{% if errors is not empty %}
-    <div style="color:red;">
-        <ul>
-            {% for err in errors %}
-                <li>{{ err|e }}</li>
-            {% endfor %}
-        </ul>
+<div class="page">
+    <div class="page-header">
+        <h2>Edit Book</h2>
+        <div class="nav-links">
+            <a href="index.php">⬅ Back to list</a>
+        </div>
     </div>
-{% endif %}
 
-<form method="POST">
+    {% if errors is not empty %}
+        <div class="alert alert-error">
+            <ul>
+                {% for err in errors %}
+                    <li>{{ err|e }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
-    <label>Title:</label><br>
-    <input type="text" name="title" value="{{ book.title|e }}" required><br><br>
+    <form method="POST">
 
-    <label>Author:</label><br>
-    <input type="text" name="author" value="{{ book.author|e }}" required><br><br>
+        <label>Title:</label>
+        <input type="text" name="title" value="{{ book.title|e }}" required>
 
-    <label>Genre:</label><br>
-    <input type="text" name="genre" value="{{ book.genre|e }}" required><br><br>
+        <label>Author:</label>
+        <input type="text" name="author" value="{{ book.author|e }}" required>
 
-    <label>Publication Year:</label><br>
-    <input type="number" name="publication_year" value="{{ book.publication_year|e }}" required><br><br>
+        <label>Genre:</label>
+        <input type="text" name="genre" value="{{ book.genre|e }}" required>
 
-    <label>ISBN (optional):</label><br>
-    <input type="text" name="isbn" value="{{ book.isbn|e }}"><br><br>
+        <label>Publication Year:</label>
+        <input type="number" name="publication_year" value="{{ book.publication_year|e }}" required>
 
-    <label>Description (optional):</label><br>
-    <textarea name="description">{{ book.description|e }}</textarea><br><br>
+        <label>ISBN (optional):</label>
+        <input type="text" name="isbn" value="{{ book.isbn|e }}">
 
-    <button type="submit">Save Changes</button>
-</form>
+        <label>Description (optional):</label>
+        <textarea name="description">{{ book.description|e }}</textarea>
 
+        <button class="btn btn-primary" type="submit">Save Changes</button>
+        <a class="btn btn-secondary" href="index.php">Cancel</a>
+    </form>
+</div>
 </body>
 </html>
