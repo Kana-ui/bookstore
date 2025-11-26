@@ -28,3 +28,10 @@ Built for the 5CS045 Task 2 assessment.
 
    ```text
    C:\xampp\htdocs\bookstore
+
+## Deployed Version (mi-linux)
+
+The project is fully deployed on the University’s mi-linux server and can be accessed here:
+https://mi-linux.wlv.ac.uk/~2413674/bookstore/public/login.php
+
+The deployed version uses the same codebase, with updated database credentials and correct file permissions (directories 755, files 644). The **vendor/** folder is included on the server so Twig works, and all features such as authentication, CRUD, and AJAX live search function normally in the deployed environment.
