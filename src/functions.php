@@ -11,10 +11,14 @@ function e(string $value): string
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
-// Helper to get a POST value with trimming
+// Helper to get a POST value (sanitised string)
 function post(string $key, $default = '')
 {
-    return isset($_POST[$key]) ? trim($_POST[$key]) : $default;
+    $value = filter_input(INPUT_POST, $key, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    if ($value === null || $value === false) {
+        return $default;
+    }
+    return trim($value);
 }
 
 // Is user logged in?
@@ -36,4 +40,33 @@ function require_login(): void
         header("Location: login.php");
         exit;
     }
+}
+
+/**
+ * Generate a simple math CAPTCHA like "3 + 5"
+ * Stores the answer in session as `captcha_answer`
+ */
+function generate_captcha_question(): string
+{
+    $a = rand(1, 9);
+    $b = rand(1, 9);
+    $_SESSION['captcha_answer'] = $a + $b;
+    return "{$a} + {$b}";
+}
+
+/**
+ * Validate captcha input (integer compare)
+ */
+function validate_captcha(string $userAnswer): bool
+{
+    if (!isset($_SESSION['captcha_answer'])) {
+        return false;
+    }
+
+    $expected = (int) $_SESSION['captcha_answer'];
+    $given = (int) $userAnswer;
+
+    unset($_SESSION['captcha_answer']);
+
+    return $given === $expected;
 }
