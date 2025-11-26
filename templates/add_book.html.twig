@@ -3,46 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <title>Add New Book</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-
-<h2>Add New Book</h2>
-<p>
-    <a href="index.php">⬅ Back</a>
-</p>
-
-{% if errors is not empty %}
-    <div style="color:red;">
-        <ul>
-            {% for err in errors %}
-                <li>{{ err|e }}</li>
-            {% endfor %}
-        </ul>
+<div class="page">
+    <div class="page-header">
+        <h2>Add New Book</h2>
+        <div class="nav-links">
+            <a href="index.php">⬅ Back to list</a>
+        </div>
     </div>
-{% endif %}
 
-<form method="POST">
+    {% if errors is not empty %}
+        <div class="alert alert-error">
+            <ul>
+                {% for err in errors %}
+                    <li>{{ err|e }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 
-    <label>Title:</label><br>
-    <input type="text" name="title" value="{{ values.title|e }}" required><br><br>
+    <form method="POST">
+        <label>Title:</label>
+        <input type="text" name="title" value="{{ values.title|e }}" required>
 
-    <label>Author:</label><br>
-    <input type="text" name="author" value="{{ values.author|e }}" required><br><br>
+        <label>Author:</label>
+        <input type="text" name="author" value="{{ values.author|e }}" required>
 
-    <label>Genre:</label><br>
-    <input type="text" name="genre" value="{{ values.genre|e }}" required><br><br>
+        <label>Genre:</label>
+        <input type="text" name="genre" value="{{ values.genre|e }}" required>
 
-    <label>Publication Year:</label><br>
-    <input type="number" name="publication_year" value="{{ values.publication_year|e }}" required><br><br>
+        <label>Publication Year:</label>
+        <input type="number" name="publication_year" value="{{ values.publication_year|e }}" required>
 
-    <label>ISBN (optional):</label><br>
-    <input type="text" name="isbn" value="{{ values.isbn|e }}"><br><br>
+        <label>ISBN (optional):</label>
+        <input type="text" name="isbn" value="{{ values.isbn|e }}">
 
-    <label>Description (optional):</label><br>
-    <textarea name="description">{{ values.description|e }}</textarea><br><br>
+        <label>Description (optional):</label>
+        <textarea name="description">{{ values.description|e }}</textarea>
 
-    <button type="submit">Add Book</button>
-</form>
-
+        <button class="btn btn-primary" type="submit">Add Book</button>
+        <a class="btn btn-secondary" href="index.php">Cancel</a>
+    </form>
+</div>
 </body>
 </html>
