@@ -70,3 +70,20 @@ function validate_captcha(string $userAnswer): bool
 
     return $given === $expected;
 }
+
+/**
+ * Render a Twig template with provided data.
+ */
+function render_template(string $template, array $data = []): void
+{
+    // Keep Twig environment in a static variable so it's created only once
+    static $twigEnv = null;
+
+    if ($twigEnv === null) {
+        // This file defines $twig (Twig environment)
+        require __DIR__ . '/../config/twig.php';
+        $twigEnv = $twig;
+    }
+
+    echo $twigEnv->render($template, $data);
+}
