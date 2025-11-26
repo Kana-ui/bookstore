@@ -1,13 +1,14 @@
 <?php
 require_once "../config/db.php";
 require_once "../src/functions.php";
+
 require_login();
-// Read search filters (GET)
+
+// Read search filters (GET for initial load)
 $titleFilter = isset($_GET['title']) ? trim($_GET['title']) : '';
 $genreFilter = isset($_GET['genre']) ? trim($_GET['genre']) : '';
 $yearFilter  = isset($_GET['year']) ? (int) $_GET['year'] : 0;
 
-// Build dynamic query
 $sql = "SELECT * FROM books";
 $conditions = [];
 $params = [];
@@ -47,16 +48,16 @@ $books = $stmt->fetchAll();
 <body>
 
 <h1>📚 Bookstore</h1>
-<a href="register.php">👤 Register User</a> 
-<a href="add_book.php">➕ Add New Book</a>
+
 <p>
     Logged in as: <?= e(current_username()) ?> |
     <a href="logout.php">Logout</a>
 </p>
 
+<a href="add_book.php">➕ Add New Book</a>
 <hr>
 
-<h3>Search Books</h3>
+<h3>Search Books (AJAX live search)</h3>
 <form method="get" action="index.php">
     <label>Title contains:</label>
     <input type="text" name="title" value="<?= e($titleFilter) ?>">
@@ -67,7 +68,7 @@ $books = $stmt->fetchAll();
     <label>Year equals:</label>
     <input type="number" name="year" value="<?= $yearFilter > 0 ? e((string)$yearFilter) : '' ?>">
 
-    <button type="submit">Search</button>
+    <button type="submit">Search (normal)</button>
     <a href="index.php">Reset</a>
 </form>
 
@@ -84,7 +85,7 @@ $books = $stmt->fetchAll();
             <th>Year</th>
             <th>Actions</th>
         </tr>
-
+        <tbody id="books-body">
         <?php foreach ($books as $b): ?>
             <tr>
                 <td><?= e($b['id']); ?></td>
@@ -101,12 +102,13 @@ $books = $stmt->fetchAll();
                 </td>
             </tr>
         <?php endforeach; ?>
-
+        </tbody>
     </table>
 
 <?php else: ?>
     <p>No books found.</p>
 <?php endif; ?>
 
+<script src="../assets/js/search.js"></script>
 </body>
 </html>
