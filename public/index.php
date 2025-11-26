@@ -2,9 +2,39 @@
 require_once "../config/db.php";
 require_once "../src/functions.php";
 
-// Fetch all books
-$stmt = $pdo->prepare("SELECT * FROM books ORDER BY created_at DESC");
-$stmt->execute();
+// Read search filters (GET)
+$titleFilter = isset($_GET['title']) ? trim($_GET['title']) : '';
+$genreFilter = isset($_GET['genre']) ? trim($_GET['genre']) : '';
+$yearFilter  = isset($_GET['year']) ? (int) $_GET['year'] : 0;
+
+// Build dynamic query
+$sql = "SELECT * FROM books";
+$conditions = [];
+$params = [];
+
+if ($titleFilter !== '') {
+    $conditions[] = "title LIKE :title";
+    $params[':title'] = '%' . $titleFilter . '%';
+}
+
+if ($genreFilter !== '') {
+    $conditions[] = "genre LIKE :genre";
+    $params[':genre'] = '%' . $genreFilter . '%';
+}
+
+if ($yearFilter > 0) {
+    $conditions[] = "publication_year = :year";
+    $params[':year'] = $yearFilter;
+}
+
+if (!empty($conditions)) {
+    $sql .= " WHERE " . implode(" AND ", $conditions);
+}
+
+$sql .= " ORDER BY created_at DESC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $books = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -16,12 +46,30 @@ $books = $stmt->fetchAll();
 </head>
 <body>
 
-<h1>Bookstore</h1>
+<h1>📚 Bookstore</h1>
+<a href="register.php">👤 Register User</a> 
+<a href="add_book.php">➕ Add New Book</a>
+<hr>
 
-<a href="add_book.php">Add New Book</a>
+<h3>Search Books</h3>
+<form method="get" action="index.php">
+    <label>Title contains:</label>
+    <input type="text" name="title" value="<?= e($titleFilter) ?>">
+
+    <label>Genre contains:</label>
+    <input type="text" name="genre" value="<?= e($genreFilter) ?>">
+
+    <label>Year equals:</label>
+    <input type="number" name="year" value="<?= $yearFilter > 0 ? e((string)$yearFilter) : '' ?>">
+
+    <button type="submit">Search</button>
+    <a href="index.php">Reset</a>
+</form>
+
 <hr>
 
 <?php if (count($books) > 0): ?>
+    <p>Found <?= count($books) ?> book(s).</p>
     <table border="1" cellpadding="8" cellspacing="0">
         <tr>
             <th>ID</th>
@@ -34,17 +82,16 @@ $books = $stmt->fetchAll();
 
         <?php foreach ($books as $b): ?>
             <tr>
-                <td><?= htmlspecialchars($b['id']); ?></td>
-                <td><?= htmlspecialchars($b['title']); ?></td>
-                <td><?= htmlspecialchars($b['author']); ?></td>
-                <td><?= htmlspecialchars($b['genre']); ?></td>
-                <td><?= htmlspecialchars($b['publication_year']); ?></td>
-
+                <td><?= e($b['id']); ?></td>
+                <td><?= e($b['title']); ?></td>
+                <td><?= e($b['author']); ?></td>
+                <td><?= e($b['genre']); ?></td>
+                <td><?= e($b['publication_year']); ?></td>
                 <td>
-                    <a href="edit_book.php?id=<?= $b['id'] ?>">Edit</a> |
-                    <a href="delete_book.php?id=<?= $b['id'] ?>"
+                    <a href="edit_book.php?id=<?= e($b['id']) ?>">✏️ Edit</a> |
+                    <a href="delete_book.php?id=<?= e($b['id']) ?>"
                        onclick="return confirm('Are you sure you want to delete this book?');">
-                        Delete
+                        🗑 Delete
                     </a>
                 </td>
             </tr>
