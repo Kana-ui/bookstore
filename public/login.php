@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <h2>Login</h2>
 <a href="index.php">⬅ Back to Home</a>
+<a href="register.php">👤 Register New User</a>
 <hr>
 
 <?php if (!empty($errors)): ?>
